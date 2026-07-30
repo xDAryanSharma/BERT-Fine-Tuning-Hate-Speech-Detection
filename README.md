@@ -133,11 +133,13 @@ http://127.0.0.1:5000
 
 ### Home Page
 
-*(Add screenshot here)*
+![Home Page](images/home.png)
 
-### Prediction Result
+---
 
-*(Add screenshot here)*
+### Text Prediction
+
+![Text Prediction](images/text_prediction.png)
 
 ---
 
