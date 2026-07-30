@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hate Speech Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+    <div class="container" style="
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        padding: 20px;
+        box-sizing: border-box;
+    ">
+        <!-- Navbar -->
+        <div style="
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        ">
+            <a href="/about" style="
+                text-decoration: none;
+                padding: 10px 20px;
+                background-color: #4CAF50;
+                color: white;
+                border-radius: 6px;
+                font-size: 14px;
+                cursor: pointer;
+            ">About</a>
+        </div>
+
+        <!-- Title -->
+        <h1 style="
+            margin-bottom: 20px;
+            font-size: 36px; /* Increased font size */
+            text-align: center;
+            font-weight: bold;
+        ">
+            Hate Speech Detection
+        </h1>
+
+        <!-- Prediction Section -->
+        <form id="predict-form" style="
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            max-width: 400px;
+            align-items: center;
+        ">
+            <!-- Text Input -->
+            <textarea 
+                name="text" 
+                id="text-input" 
+                placeholder="Enter text for prediction" 
+                style="
+                    width: 100%;
+                    height: 120px;
+                    padding: 10px;
+                    font-size: 16px;
+                    border: 1px solid #ccc;
+                    border-radius: 6px;
+                    box-sizing: border-box;
+                    resize: none;
+                "
+            ></textarea>
+                                    
+            <!-- Text before File Upload -->
+                <div style="text-align: center; font-size: 16x; margin-bottom: 10px;">
+                    Upload for Audio/Video:
+                </div>
+
+            <!-- File Upload -->
+            <div style="
+                width: 100%;
+                text-align: center; /* Center the file input */
+          
+            ">
+                <input 
+                    type="file" 
+                    id="file-input" 
+                    name="file" 
+                    accept="video/*, audio/*" 
+                    style="
+                        padding: 10px;
+                        font-size: 14px;
+                        cursor: pointer;
+                        width: 60%;
+                        max-width: 400x; /* Limit width for better centering */
+                        border: 1px solid #ccc;
+                        border-radius: 6px;
+                        box-sizing: border-box;
+                        display: inline-block; /* Ensure it respects text-align */
+                        
+                    "
+                />
+            </div>
+
+            <!-- Predict Button -->
+            <button type="submit" id="predict-button" style="
+                margin-top: 10px;
+                width: 100%;
+                padding: 12px;
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 16px;
+                transition: background-color 0.2s ease;
+            ">
+                Predict
+            </button>
+
+            <!-- Loading Indicator -->
+            <div id="loading" style="
+                display: none;
+                margin-top: 10px;
+                font-size: 14px;
+                color: #4CAF50;
+            ">
+                Processing...
+            </div>
+        </form>
+
+        <!-- Prediction Result -->
+        <div id="result" style="
+            margin-top: 20px; 
+            display: none; 
+            text-align: center;
+        ">
+            <h3>Prediction Result:</h3>
+            <p><strong>Label:</strong> <span id="label"></span></p>
+            <p><strong>Confidence:</strong> <span id="confidence"></span></p>
+        </div>
+
+        <!-- Error Message -->
+        <div id="error" style="
+            margin-top: 20px; 
+            color: red; 
+            display: none; 
+            text-align: center;
+        ">
+            <p>Error: <span id="error-message"></span></p>
+        </div>
+
+        <!-- Footer -->
+        <footer style="
+            position: absolute;
+            bottom: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #030303;
+        ">
+            Made by Aryan Sharma, Divyansh Tyagi, Vikas Kumar, Vipul Harish dongre by 🖤
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById('predict-form').onsubmit = async (e) => {
+            e.preventDefault();
+
+            // Show loading indicator
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+
+            const formData = new FormData();
+            const textInput = document.getElementById('text-input').value;
+            const fileInput = document.getElementById('file-input').files[0];
+
+            if (!textInput.trim() && !fileInput) {
+                alert("Please enter text or upload a file.");
+                document.getElementById('loading').style.display = 'none';
+                return;
+            }
+
+            if (textInput.trim()) {
+                formData.append('text', textInput);
+            }
+            if (fileInput) {
+                formData.append('file', fileInput);
+            }
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                if (data.error) {
+                    document.getElementById('result').style.display = 'none';
+                    document.getElementById('error').style.display = 'block';
+                    document.getElementById('error-message').innerText = data.error;
+                } else {
+                    document.getElementById('error').style.display = 'none';
+                    document.getElementById('result').style.display = 'block';
+                    document.getElementById('label').innerText = data.label;
+                    document.getElementById('confidence').innerText = data.confidence;
+                }
+            } catch (error) {
+                document.getElementById('result').style.display = 'none';
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('error-message').innerText = "Failed to connect to the server.";
+            } finally {
+                // Hide loading indicator
+                document.getElementById('loading').style.display = 'none';
+            }
+        };
+
+        document.getElementById('file-input').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                alert(`File selected: ${file.name}`);
+            }
+        });
+    </script>
+</body>
+</html>

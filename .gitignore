@@ -1,3 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+venv/
+myenv/
+
+# VS Code
+.vscode/
+
+# Environment variables
+.env
+
+# Uploaded files
+uploads/*
+!uploads/.gitkeep
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+=
+# Large model (host separately)
+saved_model/tf_model.h5
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
