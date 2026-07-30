@@ -1,224 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hate Speech Detection</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f0ebde">
+    <title>Hate Speech Detection — Analysis Desk</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <div class="container" style="
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        padding: 20px;
-        box-sizing: border-box;
-    ">
-        <!-- Navbar -->
-        <div style="
-            position: absolute;
-            top: 20px;
-            right: 20px;
-        ">
-            <a href="/about" style="
-                text-decoration: none;
-                padding: 10px 20px;
-                background-color: #4CAF50;
-                color: white;
-                border-radius: 6px;
-                font-size: 14px;
-                cursor: pointer;
-            ">About</a>
-        </div>
+    <main class="page-shell">
+        <div class="glitch-column" aria-hidden="true"></div>
+        <header class="masthead">
+            <a class="brand" href="/">HSD / 2026</a>
+            <a class="nav-link" href="/about">Project notes</a>
+        </header>
 
-        <!-- Title -->
-        <h1 style="
-            margin-bottom: 20px;
-            font-size: 36px; /* Increased font size */
-            text-align: center;
-            font-weight: bold;
-        ">
-            Hate Speech Detection
-        </h1>
+        <section class="detector-layout" aria-labelledby="page-title">
+            <div class="intro">
+                <p class="eyebrow">Language safety / classifier</p>
+                <h1 id="page-title">Read the signal.</h1>
+                <p class="lede">Analyse a written statement, recording, or video for hate-speech patterns using a fine-tuned language model.</p>
+                <div class="title-rule"></div>
+            </div>
 
-        <!-- Prediction Section -->
-        <form id="predict-form" style="
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            width: 100%;
-            max-width: 400px;
-            align-items: center;
-        ">
-            <!-- Text Input -->
-            <textarea 
-                name="text" 
-                id="text-input" 
-                placeholder="Enter text for prediction" 
-                style="
-                    width: 100%;
-                    height: 120px;
-                    padding: 10px;
-                    font-size: 16px;
-                    border: 1px solid #ccc;
-                    border-radius: 6px;
-                    box-sizing: border-box;
-                    resize: none;
-                "
-            ></textarea>
-                                    
-            <!-- Text before File Upload -->
-                <div style="text-align: center; font-size: 16x; margin-bottom: 10px;">
-                    Upload for Audio/Video:
+            <section class="analysis-panel" aria-labelledby="analysis-title">
+                <div class="panel-topbar">
+                    <h2 id="analysis-title">Analysis desk</h2>
+                    <span class="mono">INPUT / 01</span>
                 </div>
+                <form id="predict-form" novalidate>
+                    <div class="form-fields">
+                        <label for="text-input">
+                            <span class="field-label">Text sample <span>optional</span></span>
+                            <textarea name="text" id="text-input" placeholder="Paste or write text to analyse…"></textarea>
+                        </label>
+                        <div class="upload-field">
+                            <span class="field-label">Audio or video <span>optional</span></span>
+                            <label class="file-picker" id="file-drop-zone" for="file-input">
+                                <span class="file-name" id="file-name">No media selected</span>
+                                <span class="upload-action">Drop file or browse</span>
+                                <input type="file" id="file-input" name="file" accept="video/*,audio/*">
+                            </label>
+                            <p class="status">Supported: WAV, MP3, MP4, AVI, MOV</p>
+                        </div>
+                        <button type="submit" class="submit-button" id="predict-button">Run classification →</button>
+                    </div>
+                </form>
+                <div id="loading" class="message" role="status"><h3>Processing</h3><p class="mono">Reading input and calculating confidence…</p></div>
+                <div id="result" class="message" aria-live="polite">
+                    <h3>Classification result</h3>
+                    <div class="result-grid">
+                        <div><span>LABEL</span><strong id="label"></strong></div>
+                        <div><span>CONFIDENCE</span><strong id="confidence"></strong></div>
+                    </div>
+                </div>
+                <div id="error" class="message error" role="alert"><h3>Unable to analyse</h3><p id="error-message"></p></div>
+            </section>
+        </section>
 
-            <!-- File Upload -->
-            <div style="
-                width: 100%;
-                text-align: center; /* Center the file input */
-          
-            ">
-                <input 
-                    type="file" 
-                    id="file-input" 
-                    name="file" 
-                    accept="video/*, audio/*" 
-                    style="
-                        padding: 10px;
-                        font-size: 14px;
-                        cursor: pointer;
-                        width: 60%;
-                        max-width: 400x; /* Limit width for better centering */
-                        border: 1px solid #ccc;
-                        border-radius: 6px;
-                        box-sizing: border-box;
-                        display: inline-block; /* Ensure it respects text-align */
-                        
-                    "
-                />
-            </div>
-
-            <!-- Predict Button -->
-            <button type="submit" id="predict-button" style="
-                margin-top: 10px;
-                width: 100%;
-                padding: 12px;
-                background-color: #4CAF50;
-                color: white;
-                border: none;
-                border-radius: 6px;
-                cursor: pointer;
-                font-size: 16px;
-                transition: background-color 0.2s ease;
-            ">
-                Predict
-            </button>
-
-            <!-- Loading Indicator -->
-            <div id="loading" style="
-                display: none;
-                margin-top: 10px;
-                font-size: 14px;
-                color: #4CAF50;
-            ">
-                Processing...
-            </div>
-        </form>
-
-        <!-- Prediction Result -->
-        <div id="result" style="
-            margin-top: 20px; 
-            display: none; 
-            text-align: center;
-        ">
-            <h3>Prediction Result:</h3>
-            <p><strong>Label:</strong> <span id="label"></span></p>
-            <p><strong>Confidence:</strong> <span id="confidence"></span></p>
-        </div>
-
-        <!-- Error Message -->
-        <div id="error" style="
-            margin-top: 20px; 
-            color: red; 
-            display: none; 
-            text-align: center;
-        ">
-            <p>Error: <span id="error-message"></span></p>
-        </div>
-
-        <!-- Footer -->
-        <footer style="
-            position: absolute;
-            bottom: 20px;
-            text-align: center;
-            font-size: 14px;
-            color: #030303;
-        ">
-            Made by Aryan Sharma, Divyansh Tyagi, Vikas Kumar, Vipul Harish dongre by 🖤
-        </footer>
-    </div>
-
-    <script>
-        document.getElementById('predict-form').onsubmit = async (e) => {
-            e.preventDefault();
-
-            // Show loading indicator
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('result').style.display = 'none';
-            document.getElementById('error').style.display = 'none';
-
-            const formData = new FormData();
-            const textInput = document.getElementById('text-input').value;
-            const fileInput = document.getElementById('file-input').files[0];
-
-            if (!textInput.trim() && !fileInput) {
-                alert("Please enter text or upload a file.");
-                document.getElementById('loading').style.display = 'none';
-                return;
-            }
-
-            if (textInput.trim()) {
-                formData.append('text', textInput);
-            }
-            if (fileInput) {
-                formData.append('file', fileInput);
-            }
-
-            try {
-                const response = await fetch('/predict', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const data = await response.json();
-                if (data.error) {
-                    document.getElementById('result').style.display = 'none';
-                    document.getElementById('error').style.display = 'block';
-                    document.getElementById('error-message').innerText = data.error;
-                } else {
-                    document.getElementById('error').style.display = 'none';
-                    document.getElementById('result').style.display = 'block';
-                    document.getElementById('label').innerText = data.label;
-                    document.getElementById('confidence').innerText = data.confidence;
-                }
-            } catch (error) {
-                document.getElementById('result').style.display = 'none';
-                document.getElementById('error').style.display = 'block';
-                document.getElementById('error-message').innerText = "Failed to connect to the server.";
-            } finally {
-                // Hide loading indicator
-                document.getElementById('loading').style.display = 'none';
-            }
-        };
-
-        document.getElementById('file-input').addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                alert(`File selected: ${file.name}`);
-            }
-        });
-    </script>
+        <footer class="page-footer"><span class="mono">HATE SPEECH DETECTION</span><span class="page-number">001 / 001</span></footer>
+    </main>
+    <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
 </body>
 </html>

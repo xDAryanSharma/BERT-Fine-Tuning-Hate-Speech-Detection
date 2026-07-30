@@ -1,34 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>About - Hate Speech Detection</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f0ebde">
+    <title>Project Notes — Hate Speech Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <div class="container" style="
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        padding: 20px;
-        box-sizing: border-box;
-        text-align: center;
-    ">
-            <h1>About This Project</h1>
-            <p>We fine-tuned BERT-based,leveraging its advanced contextual understanding to classify text accurately and predict the speech. The model was pre-trained on a large corpus and then fine-tuned on a specialized dataset containing labeled examples of both hate speech and non-hate speech.</p>
-            <p>Feel free to explore the features and test the model with your own inputs! and create a Safer World!</p>
-        <a href="/" style="
-            text-decoration: none;
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border-radius: 6px;
-            font-size: 14px;
-            cursor: pointer;
-        ">Go Back</a>
-    </div>
+    <main class="page-shell">
+        <div class="glitch-column" aria-hidden="true"></div>
+        <header class="masthead"><a class="brand" href="/">HSD / 2026</a><a class="nav-link" href="/">Analysis desk</a></header>
+        <section class="about-layout" aria-labelledby="about-title">
+            <p class="eyebrow">Project notes / 02</p>
+            <h1 id="about-title">Context, not just keywords.</h1>
+            <div class="about-grid">
+                <div class="about-copy">
+                    <p>This project uses a fine-tuned BERT-based model to classify text as hate speech or non-hate speech. By learning context from a large corpus and then adapting to labelled examples, the model can look beyond isolated terms.</p>
+                    <p>Use the analysis desk to test written text or upload supported audio and video. The goal is a more careful first signal for moderation workflows and a safer digital world.</p>
+                </div>
+                <aside class="about-meta">
+                    <p class="section-label">System</p>
+                    <p class="mono">MODEL / BERT<br>MEDIA / AUDIO + VIDEO<br>OUTPUT / LABEL + CONFIDENCE</p>
+                    <div class="qr-block" aria-hidden="true">{% for i in range(64) %}<i></i>{% endfor %}</div>
+                </aside>
+            </div>
+        </section>
+        <footer class="page-footer"><span class="mono">MADE BY ARYAN SHARMA</span><span class="page-number">002 / 002</span></footer>
+    </main>
 </body>
 </html>
