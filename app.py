@@ -61,7 +61,7 @@ def predict_text():
                     label, confidence = predict(text)
                     return jsonify({'label': label, 'confidence': f"{confidence:.2f}"})
                 else:
-                    return jsonify({'error': 'Failed to extract text from file'})
+                    return jsonify({'error': 'No speech could be transcribed from this file. Check that it contains clear speech and that FFmpeg and your internet connection are available.'})
 
         return jsonify({'error': 'No valid input provided'})
     except Exception as e:
