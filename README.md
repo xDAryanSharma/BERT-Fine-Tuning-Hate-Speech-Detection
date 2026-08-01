@@ -113,7 +113,7 @@ Download the model and place it inside:
 saved_model/
 ```
 
-> **Model download:** *(Add your Google Drive or Hugging Face link here.)*
+> **Model download:** *https://huggingface.co/ARYANSHARMA999/bert-hate-speech-detection*
 
 ### 6. Run the application
 
